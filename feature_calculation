@@ -1,0 +1,44 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jul 06 10:36:07 2015
+
+@author: Pahadi
+"""
+
+from sklearn import ensemble, preprocessing, grid_search, cross_validation
+import pandas as pd
+import numpy as np
+from sklearn import ensemble, preprocessing
+
+import csv
+# load training and test datasets
+train = pd.read_csv('D:/carterpiller/competition_data/train_set.csv' , parse_dates=[2,])
+merge_component_bill = pd.read_csv("D:/carterpiller/competition_data/mergecompobill.csv")
+test = pd.read_csv('D:/carterpiller/competition_data/test_set.csv' , parse_dates=[2,])
+
+
+
+
+
+print train.shape, merge_component_bill.shape
+merge_component_bill = merge_component_bill.drop(["component_id_1","quantity_1" , "component_id_2" ,"quantity_2", \
+    "component_id_3", "quantity_3" , "component_id_4" ,"quantity_4" ,"component_id_5" , \
+    "quantity_5"   , "component_id_6" , "quantity_6" , "component_id_7" , "quantity_7" ,\
+     "component_id_8" ,"quantity_8"], axis =1)
+     
+#print train.shape, merge_component_bill.columns[1:10]
+
+merge_mergecomp_train = train.merge(merge_component_bill, on='tube_assembly_id', how='left')
+
+merge_mergecomp_test = test.merge(merge_component_bill, on='tube_assembly_id', how='left')
+
+
+
+
+print merge_mergecomp_train.shape, merge_mergecomp_test.shape     
+     
+merge_mergecomp_test.to_csv("mergeaftercompobillthentest.csv", index = False)     
+merge_mergecomp_train.to_csv("mergeaftercompobillthentrain.csv", index =False)
+
+
+#test = pd.read_csv('D:/carterpiller/competition_data/test_set.csv', parse_dates=[3,])
