@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Aug 02 00:58:03 2015
+
+@author: Pahadi
+"""
+
+################# putiing weight in place of component
+
+
+import glob
+import pandas as pd
+import numpy as np
+from collections import defaultdict
+
+
+#components = pd.read_csv("D:/carterpiller/competition_data/components.csv")
+bill1 = pd.read_csv("D:/carterpiller/competition_data/bill_With_numberof connector.csv")# , nrows =1)
+
+bill = pd.read_csv("D:/carterpiller/competition_data/bill_of_materials.csv")
+
+
+bill.fillna(0)
+weight_cal = defaultdict()
+for i, files in enumerate(glob.glob("D:\carterpiller\competition_data\comp_*")):
+    print i,files
+    pds = pd.read_csv(files)
+    pds.loc[(pds.weight.isnull()) , 'weight'] = pds.loc[pd.notnull(pds.weight), 'weight'].mean()
+    for name in np.unique(pds.component_id):
+        weight_cal[name] = pds.loc[pds.component_id == name, 'weight'].values[0]
+        
+        
+#print weight_cal
+    
+
+
+for names in weight_cal:
+    bill.loc[bill.component_id_1 == names, 'component_id_1'] = weight_cal[names]
+    bill.loc[bill.component_id_2 == names, 'component_id_2'] = weight_cal[names]
+    bill.loc[bill.component_id_3 == names, 'component_id_3'] = weight_cal[names]        
+    bill.loc[bill.component_id_4 == names, 'component_id_4'] = weight_cal[names]    
+    bill.loc[bill.component_id_5 == names, 'component_id_5'] = weight_cal[names]
+    bill.loc[bill.component_id_6 == names, 'component_id_6'] = weight_cal[names]
+    bill.loc[bill.component_id_7 == names, 'component_id_7'] = weight_cal[names]        
+    bill.loc[bill.component_id_8 == names, 'component_id_8'] = weight_cal[names]
+    
+
+for i in bill.columns:
+    bill.loc[bill[i].isnull(),i] = 0
+    
+
+
+
+
+#bill.apply(cal_weight,axis=1)
+bill['bolt_pattern_long'] = bill1['bolt_pattern_long']
+bill['num_orientations'] = bill1['num_orientations']
+bill['num_of_connections'] = bill1['num_of_connections']
+bill['thickness1'] = bill1['thickness1']
+bill['bolt_pattern_wide'] = bill1['bolt_pattern_wide']
+bill['num_unique_features'] = bill1['num_unique_features']
+bill['weight'] = bill1['weight']
+
+
+
+
+
+bill.to_csv("bill_replaced_With_weight.csv", index = False)
+
+
+
+
+
+
+
+
